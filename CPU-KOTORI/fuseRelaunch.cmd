@@ -1,0 +1,1 @@
+-intstyle "ise" -incremental -o "C:/_Dev/HDLProj/THCO-MIPS-CPU-NEXT/CPU-KOTORI/testbench_CPUTop_isim_beh.exe" -prj "C:/_Dev/HDLProj/THCO-MIPS-CPU-NEXT/CPU-KOTORI/testbench_CPUTop_beh.prj" "work.testbench_CPUTop" 
