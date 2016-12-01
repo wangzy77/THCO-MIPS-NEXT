@@ -87,4 +87,7 @@ doc/pr3_report/hardwork*.*
 
 
 CPU-KOTORI/isim/
-CPU-KOTORI/netgen
+CPU-KOTORI/netgen/
+*.wdb
+*.xls
+*.xlsx
