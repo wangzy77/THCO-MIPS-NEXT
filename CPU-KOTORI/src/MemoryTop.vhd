@@ -169,7 +169,8 @@ begin
     with now_state select
         ram2_OE <= 
             MemRead when idel1 | dataRW | idel2,
-            READ_DIS when others;
+            READ_DIS when boot_flash | boot_ram1 | boot_ram2,
+            READ_EN when others;
 	-- ram2_OE <= MemRead when (now_state = idel1 or now_state = dataRW or now_state = idel2) else READ_EN;
 	
     ram2_WE <= 
