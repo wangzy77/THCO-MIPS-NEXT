@@ -1,7 +1,6 @@
 ~$*
 *.exe
 *.bin
-*.txt
 *.spl
 *.sym
 *.vhi
@@ -91,3 +90,4 @@ CPU-KOTORI/netgen/
 *.wdb
 *.xls
 *.xlsx
+temp/

@@ -99,8 +99,8 @@ begin
 	memAddress <= "00" & tempAddress;
 	with now_state select
 		tempAddress <=
-			instrAddress when boot | instrRead | idel1,
-			dataAddress when dataRW | idel2;
+			instrAddress when boot | instrRead,
+			dataAddress when dataRW | idel1 | idel2;
 	
 	with now_state select
 		flag_mem <= 
