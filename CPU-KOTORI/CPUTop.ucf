@@ -115,7 +115,6 @@ NET "pin_debug_tube[2]" LOC = G9;
 NET "pin_debug_tube[1]" LOC = A10;
 NET "pin_debug_tube[0]" LOC = B10;
 
-# PlanAhead Generated physical constraints 
 
 NET "pin_key_in[15]" LOC = J6;
 NET "pin_key_in[14]" LOC = J7;
@@ -136,3 +135,50 @@ NET "pin_key_in[0]" LOC = T7;
 NET "pin_CLK_11MHz" LOC = B8;
 NET "pin_CLK_50MHz" LOC = B9;
 NET "pin_CLK_hand" LOC = U9;
+
+# PlanAhead Generated physical constraints 
+
+NET "pin_flash_addr[22]" LOC = K4;
+NET "pin_flash_addr[21]" LOC = K5;
+NET "pin_flash_addr[20]" LOC = K6;
+NET "pin_flash_addr[19]" LOC = L1;
+NET "pin_flash_addr[18]" LOC = L2;
+NET "pin_flash_addr[17]" LOC = L3;
+NET "pin_flash_addr[16]" LOC = L4;
+NET "pin_flash_addr[15]" LOC = L5;
+NET "pin_flash_addr[14]" LOC = L6;
+NET "pin_flash_addr[13]" LOC = M3;
+NET "pin_flash_addr[12]" LOC = M4;
+NET "pin_flash_addr[11]" LOC = M5;
+NET "pin_flash_addr[10]" LOC = M6;
+NET "pin_flash_addr[9]" LOC = N4;
+NET "pin_flash_addr[8]" LOC = N5;
+NET "pin_flash_addr[7]" LOC = P1;
+NET "pin_flash_addr[6]" LOC = P2;
+NET "pin_flash_addr[5]" LOC = P3;
+NET "pin_flash_addr[4]" LOC = P4;
+NET "pin_flash_addr[3]" LOC = R2;
+NET "pin_flash_addr[2]" LOC = R3;
+NET "pin_flash_addr[1]" LOC = T1;
+NET "pin_flash_data[15]" LOC = F1;
+NET "pin_flash_data[14]" LOC = F2;
+NET "pin_flash_data[13]" LOC = G3;
+NET "pin_flash_data[12]" LOC = G4;
+NET "pin_flash_data[11]" LOC = G5;
+NET "pin_flash_data[10]" LOC = G6;
+NET "pin_flash_data[9]" LOC = H1;
+NET "pin_flash_data[8]" LOC = H2;
+NET "pin_flash_data[7]" LOC = H3;
+NET "pin_flash_data[6]" LOC = H4;
+NET "pin_flash_data[5]" LOC = H5;
+NET "pin_flash_data[4]" LOC = H6;
+NET "pin_flash_data[3]" LOC = J1;
+NET "pin_flash_data[2]" LOC = J2;
+NET "pin_flash_data[1]" LOC = J4;
+NET "pin_flash_data[0]" LOC = J5;
+NET "pin_flash_byte" LOC = C1;
+NET "pin_flash_ce" LOC = E4;
+NET "pin_flash_oe" LOC = E1;
+NET "pin_flash_rp" LOC = D1;
+NET "pin_flash_vpen" LOC = C2;
+NET "pin_flash_we" LOC = D4;

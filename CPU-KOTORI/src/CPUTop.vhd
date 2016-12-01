@@ -59,7 +59,17 @@ Port(
     
     pin_debug_led : out std_logic_vector(15 downto 0);
     pin_debug_tube : out std_logic_vector(13 downto 0);
-    pin_key_in : in Bus16);
+    pin_key_in : in Bus16;
+    
+    -- port for flash
+    pin_flash_byte : out std_logic;
+    pin_flash_vpen : out std_logic;
+    pin_flash_ce : out std_logic;
+    pin_flash_oe : out std_logic;
+    pin_flash_we : out std_logic;
+    pin_flash_rp : out std_logic;
+    pin_flash_addr : out std_logic_vector(22 downto 1);
+    pin_flash_data : inout std_logic_vector(15 downto 0));
            
 end CPUTop;
 
@@ -299,12 +309,12 @@ end component;
 --MEM
 component MemoryTop is
 Port(
-    --clock  
+    --clock 
     clk_50MHz : in std_logic;
     clk_11Mhz : in std_logic;
     clk_hand : in std_logic;
     rst : in std_logic;
-    cpu_clk : out std_logic;
+    cpu_clk : out std_logic := '1';
     key_in : in Bus16;
     
     --addr1 for instruction
@@ -340,7 +350,19 @@ Port(
     serialWRN : out std_logic;
     
     --memAddress for ram2
-    memAddress : out std_logic_vector(17 downto 0));
+    memAddress : out std_logic_vector(17 downto 0);
+    
+    -- port for flash
+    flash_byte : out std_logic;
+    flash_vpen : out std_logic;
+    flash_ce : out std_logic;
+    flash_oe : out std_logic;
+    flash_we : out std_logic;
+    flash_rp : out std_logic;
+    flash_addr : out std_logic_vector(22 downto 1);
+    flash_data : inout std_logic_vector(15 downto 0);
+    
+    debug_led_state :out std_logic_vector(3 downto 0));
 end component;
 
 component MEM_WB is
@@ -661,7 +683,19 @@ Unit_MemoryTop : MemoryTop port map(
     serialTSRE => pin_com_tsre,
     serialWRN => pin_com_wrn,
     
-    memAddress => pin_RAM2_Addr);
+    memAddress => pin_RAM2_Addr,
+    
+    -- flash part
+    flash_byte => pin_flash_byte,
+    flash_vpen => pin_flash_vpen,
+    flash_ce => pin_flash_ce,
+    flash_oe => pin_flash_oe,
+    flash_we => pin_flash_we,
+    flash_rp => pin_flash_rp,
+    flash_addr => pin_flash_addr,
+    flash_data => pin_flash_data,
+    
+    debug_led_state => pin_debug_led(3 downto 0));
     
 Unit_MEM_WB : MEM_WB port map(
     instruction_type_in => EXE_MEM_instruction_type_o,
@@ -683,9 +717,9 @@ Unit_MEM_WB : MEM_WB port map(
 pin_RAM1_Addr <= ZERO_18;
 ----------------------------------------------------------------------------------
 --debug
-    pin_debug_led(15 downto 2) <= MemeryTop_instrOutput(15 downto 2);
-    pin_debug_led(1) <= pin_com_tbre;
-    pin_debug_led(0) <= pin_com_tsre;
+    pin_debug_led(15 downto 4) <= MemeryTop_instrOutput(15 downto 4);
+    --pin_debug_led(1) <= pin_com_tbre;
+    --pin_debug_led(0) <= pin_com_tsre;
 	 
 Unit_tube_encoder_1 : tube_encoder port map(
     key => IF_PC_output_pc(7 downto 4),

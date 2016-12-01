@@ -65,6 +65,8 @@ constant ZZZZ_16 : std_logic_vector(15 downto 0) := "ZZZZZZZZZZZZZZZZ";
 
 constant INSTRUCTION_NOP : std_logic_vector(15 downto 0) := "0000100000000000";
 
+constant MAX_INS_FROM_FLASH : std_logic_vector(15 downto 0) := x"0200";
+
 
 ----------------------------------------------------------------------------------
 -- 自定义 type
