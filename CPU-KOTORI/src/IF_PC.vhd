@@ -54,6 +54,7 @@ begin
 	begin
 		if (rst = RST_EN) then 
 			output_pc <= ZERO_16;
+            output_pc_inc <= ZERO_16;
 
 		elsif (clk'event and clk = '0') then
 			if (WriteIn = WRITE_EN and IS_LW = V_FALSE) then

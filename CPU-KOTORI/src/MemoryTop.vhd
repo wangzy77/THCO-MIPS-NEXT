@@ -9,9 +9,12 @@ use WORK.util.ALL;
 entity MemoryTop is
 	Port(
 		--clock 
-		clk : in std_logic;
+		clk_50MHz : in std_logic;
+        clk_11Mhz : in std_logic;
+        clk_hand : in std_logic;
 		rst : in std_logic;
         cpu_clk : out std_logic := '1';
+        key_in : in Bus16;
 		
 		--addr1 for instruction
 		instrAddress : in std_logic_vector(15 downto 0);
@@ -50,6 +53,13 @@ entity MemoryTop is
 end MemoryTop;
 
 architecture Behavioral of MemoryTop is
+
+component Divider is
+port(clkin : in std_logic;
+     clkout : out std_logic;
+     key_in : in std_logic_vector(3 downto 0)
+     );
+end component;
 	
 	--state machine
 	type State is (
@@ -68,6 +78,8 @@ architecture Behavioral of MemoryTop is
 	signal serialHolder : std_logic_vector(7 downto 0);
     
     signal debug_ram1_databus : std_logic_vector(7 downto 0);
+    signal mem_clk : std_logic := '1';
+    signal debug_clk_from_div : std_logic := '1';
 	
 begin
 	
@@ -94,11 +106,18 @@ begin
 		flag_mem <= 
 			MemWrite when idel1 | dataRW,
 			WRITE_DIS when others;
+            
+    with key_in(3 downto 0) select
+    mem_clk <=
+        clk_hand when "1111",
+        clk_50MHz when "0000",
+        clk_11Mhz when "0001",
+        debug_clk_from_div when others;
 	
 	-- memHolder <= dataInput;
 	
 	ram2_Databus <= dataInput when flag_mem = WRITE_EN else "ZZZZZZZZZZZZZZZZ";
-	
+
 	
 	--serial part
 	
@@ -119,13 +138,13 @@ begin
 	ram1_Databus <= dataInput(7 downto 0) when (flag_serial = WRITE_EN) else "ZZZZZZZZ";
     debug_ram1_databus <= dataInput(7 downto 0) when (flag_serial = WRITE_EN) else "ZZZZZZZZ";
 	
-	process(clk, rst)
+	process(mem_clk, rst)
 	
 	begin
 		
 		if (rst = RST_EN) then
 			now_state <= boot;
-		elsif (clk'event and clk = '0') then 
+		elsif (mem_clk'event and mem_clk = '0') then 
 			case now_state is
 				when boot =>
 					now_state <= instrRead;
@@ -153,6 +172,12 @@ begin
 		end if;
 	
 	end process;
+    
+    
+    Unit_Divider : Divider port map(
+        clkin => clk_50MHz,
+        clkout => debug_clk_from_div,
+        key_in => key_in(3 downto 0));
 	
 end Behavioral;
 	

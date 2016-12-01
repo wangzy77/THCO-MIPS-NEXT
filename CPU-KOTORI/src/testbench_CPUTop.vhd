@@ -45,25 +45,30 @@ ARCHITECTURE behavior OF testbench_CPUTop IS
     -- Component Declaration for the Unit Under Test (UUT)
  
     COMPONENT CPUTop
-    PORT(
-         rst : IN  std_logic;
-         pin_CLK_IN : IN  std_logic;
-         pin_RAM1_Addr : OUT  std_logic_vector(17 downto 0);
-         pin_RAM1_EN : OUT  std_logic;
-         pin_RAM1_WE : OUT  std_logic;
-         pin_RAM1_OE : OUT  std_logic;
-         pin_RAM1_Data : INOUT  std_logic_vector(15 downto 0);
-         pin_RAM2_Addr : OUT  std_logic_vector(17 downto 0);
-         pin_RAM2_EN : OUT  std_logic;
-         pin_RAM2_WE : OUT  std_logic;
-         pin_RAM2_OE : OUT  std_logic;
-         pin_RAM2_Data : INOUT  std_logic_vector(15 downto 0);
-         pin_com_data_ready : IN  std_logic;
-         pin_com_rdn : OUT  std_logic;
-         pin_com_tbre : IN  std_logic;
-         pin_com_tsre : IN  std_logic;
-         pin_com_wrn : OUT  std_logic
-        );
+    Port(
+        rst : in std_logic;
+        pin_CLK_50MHz : in  STD_LOGIC;
+        pin_CLK_11MHz : in std_logic;
+        pin_CLK_hand : in std_logic;
+        pin_RAM1_Addr : out  STD_LOGIC_VECTOR (17 downto 0) := ZERO_18;
+        pin_RAM1_EN : out  STD_LOGIC;
+        pin_RAM1_WE : out  STD_LOGIC;
+        pin_RAM1_OE : out  STD_LOGIC;
+        pin_RAM1_Data : inout  STD_LOGIC_VECTOR (15 downto 0);
+        pin_RAM2_Addr : out  STD_LOGIC_VECTOR (17 downto 0);
+        pin_RAM2_EN : out  STD_LOGIC;
+        pin_RAM2_WE : out  STD_LOGIC;--0->使能
+        pin_RAM2_OE : out  STD_LOGIC;
+        pin_RAM2_Data : inout  STD_LOGIC_VECTOR (15 downto 0);
+        pin_com_data_ready : in STD_LOGIC;
+        pin_com_rdn : out STD_LOGIC;---0->使能
+        pin_com_tbre : in STD_LOGIC;
+        pin_com_tsre : in STD_LOGIC;
+        pin_com_wrn : out STD_LOGIC;
+        
+        pin_debug_led : out std_logic_vector(15 downto 0);
+        pin_debug_tube : out std_logic_vector(13 downto 0);
+        pin_key_in : in Bus16);
     END COMPONENT;
     
     component cpu_ram
@@ -82,7 +87,7 @@ ARCHITECTURE behavior OF testbench_CPUTop IS
 
    --Inputs
    signal rst : std_logic := RST_DIS;
-   signal pin_CLK_IN : std_logic := '0';
+   signal pin_CLK_11MHz, pin_CLK_50MHz, pin_CLK_hand : std_logic := '0';
    signal pin_com_data_ready : std_logic := '1';
    signal pin_com_tbre : std_logic := '1';
    signal pin_com_tsre : std_logic := '1';
@@ -102,6 +107,7 @@ ARCHITECTURE behavior OF testbench_CPUTop IS
    signal pin_RAM2_OE : std_logic;
    signal pin_com_rdn : std_logic;
    signal pin_com_wrn : std_logic;
+   signal pin_key_in : Bus16;
    -- No clocks detected in port list. Replace <clock> below with 
    -- appropriate port name 
  
@@ -112,33 +118,38 @@ BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: CPUTop PORT MAP (
-          rst => rst,
-          pin_CLK_IN => pin_CLK_IN,
-          pin_RAM1_Addr => pin_RAM1_Addr,
-          pin_RAM1_EN => pin_RAM1_EN,
-          pin_RAM1_WE => pin_RAM1_WE,
-          pin_RAM1_OE => pin_RAM1_OE,
-          pin_RAM1_Data => pin_RAM1_Data,
-          pin_RAM2_Addr => pin_RAM2_Addr,
-          pin_RAM2_EN => pin_RAM2_EN,
-          pin_RAM2_WE => pin_RAM2_WE,
-          pin_RAM2_OE => pin_RAM2_OE,
-          pin_RAM2_Data => pin_RAM2_Data,
-          pin_com_data_ready => pin_com_data_ready,
-          pin_com_rdn => pin_com_rdn,
-          pin_com_tbre => pin_com_tbre,
-          pin_com_tsre => pin_com_tsre,
-          pin_com_wrn => pin_com_wrn
+        rst => rst,
+        pin_CLK_50MHz => pin_CLK_50MHz,
+        pin_CLK_11MHz => pin_CLK_11MHz,
+        pin_CLK_hand => pin_CLK_hand,
+        pin_RAM1_Addr => pin_RAM1_Addr,
+        pin_RAM1_EN => pin_RAM1_EN,
+        pin_RAM1_WE => pin_RAM1_WE,
+        pin_RAM1_OE => pin_RAM1_OE,
+        pin_RAM1_Data => pin_RAM1_Data,
+        pin_RAM2_Addr => pin_RAM2_Addr,
+        pin_RAM2_EN => pin_RAM2_EN,
+        pin_RAM2_WE => pin_RAM2_WE,
+        pin_RAM2_OE => pin_RAM2_OE,
+        pin_RAM2_Data => pin_RAM2_Data,
+        pin_com_data_ready => pin_com_data_ready,
+        pin_com_rdn => pin_com_rdn,
+        pin_com_tbre => pin_com_tbre,
+        pin_com_tsre => pin_com_tsre,
+        pin_com_wrn => pin_com_wrn,
+        pin_key_in => pin_key_in
         );
 
    -- Clock process definitions
    pin_CLK_IN_process :process
    begin
-		pin_CLK_IN <= '0';
+		pin_CLK_50MHz <= '0';
 		wait for CLK_period/2;
-		pin_CLK_IN <= '1';
+		pin_CLK_50MHz <= '1';
 		wait for CLK_period/2;
    end process;
+   
+   pin_key_in <= x"0000";
  
 
 -- Stimulus process

@@ -38,7 +38,9 @@ entity CPUTop is
 
 Port(
     rst : in std_logic;
-    pin_CLK_IN : in  STD_LOGIC;
+    pin_CLK_50MHz : in  STD_LOGIC;
+    pin_CLK_11MHz : in std_logic;
+    pin_CLK_hand : in std_logic;
     pin_RAM1_Addr : out  STD_LOGIC_VECTOR (17 downto 0) := ZERO_18;
     pin_RAM1_EN : out  STD_LOGIC;
     pin_RAM1_WE : out  STD_LOGIC;
@@ -56,7 +58,8 @@ Port(
     pin_com_wrn : out STD_LOGIC;
     
     pin_debug_led : out std_logic_vector(15 downto 0);
-    pin_debug_tube : out std_logic_vector(13 downto 0));
+    pin_debug_tube : out std_logic_vector(13 downto 0);
+    pin_key_in : in Bus16);
            
 end CPUTop;
 
@@ -296,10 +299,13 @@ end component;
 --MEM
 component MemoryTop is
 Port(
-    --clock 
-    clk : in std_logic;
+    --clock  
+    clk_50MHz : in std_logic;
+    clk_11Mhz : in std_logic;
+    clk_hand : in std_logic;
     rst : in std_logic;
     cpu_clk : out std_logic;
+    key_in : in Bus16;
     
     --addr1 for instruction
     instrAddress : in std_logic_vector(15 downto 0);
@@ -622,9 +628,12 @@ Unit_EXE_MEM : EXE_MEM port map(
     rst => rst);   
     
 Unit_MemoryTop : MemoryTop port map(
-    clk => pin_CLK_IN,
+    clk_50MHz => pin_CLK_50MHz,
+    clk_11Mhz => pin_CLK_11MHz,
+    clk_hand => pin_CLK_hand,
     rst => rst,
     cpu_clk => cpu_clk,
+    key_in => pin_key_in,
     
     instrAddress => IF_PC_output_pc,
     instrOutput => MemeryTop_instrOutput,

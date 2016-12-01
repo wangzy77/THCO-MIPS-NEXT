@@ -121,7 +121,7 @@ begin
             elsif(cur_rreg2_type_i = ll_wreg_type_i) then
                 alu_B_fin_o <= ll_wreg_data_i;
             else
-                alu_B_fin_o <= cur_rreg1_data_i;
+                alu_B_fin_o <= cur_rreg2_data_i;
             end if;
             
         when ins_BEQZ | ins_BNEZ =>
@@ -131,7 +131,7 @@ begin
             elsif(cur_rreg2_type_i = ll_wreg_type_i) then
                 alu_A_fin_o <= ll_wreg_data_i;
             else
-                alu_A_fin_o <= cur_rreg1_data_i;
+                alu_A_fin_o <= cur_rreg2_data_i;
             end if;
             
             alu_B_fin_o <= cur_exted_imm_i;
@@ -161,7 +161,7 @@ begin
             elsif(cur_rreg2_type_i = ll_wreg_type_i) then
                 flag_A_fin_o <= ll_wreg_data_i;
             else
-                flag_A_fin_o <= cur_rreg1_data_i;
+                flag_A_fin_o <= cur_rreg2_data_i;
             end if;
             
         when ins_JALR | ins_JR | ins_JRRA |

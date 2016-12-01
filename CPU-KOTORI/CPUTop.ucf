@@ -68,7 +68,6 @@ NET "pin_RAM2_Data[3]" LOC = T14;
 NET "pin_RAM2_Data[2]" LOC = T15;
 NET "pin_RAM2_Data[1]" LOC = T16;
 NET "pin_RAM2_Data[0]" LOC = U13;
-NET "pin_CLK_IN" LOC = U9;
 NET "pin_com_data_ready" LOC = A16;
 NET "pin_com_rdn" LOC = C14;
 NET "pin_com_tbre" LOC = D14;
@@ -100,7 +99,6 @@ NET "pin_debug_led[2]" LOC = A11;
 NET "pin_debug_led[1]" LOC = E10;
 NET "pin_debug_led[0]" LOC = D10;
 
-# PlanAhead Generated physical constraints 
 
 NET "pin_debug_tube[13]" LOC = C7;
 NET "pin_debug_tube[12]" LOC = D7;
@@ -116,3 +114,25 @@ NET "pin_debug_tube[3]" LOC = F9;
 NET "pin_debug_tube[2]" LOC = G9;
 NET "pin_debug_tube[1]" LOC = A10;
 NET "pin_debug_tube[0]" LOC = B10;
+
+# PlanAhead Generated physical constraints 
+
+NET "pin_key_in[15]" LOC = J6;
+NET "pin_key_in[14]" LOC = J7;
+NET "pin_key_in[13]" LOC = K2;
+NET "pin_key_in[12]" LOC = K7;
+NET "pin_key_in[11]" LOC = M1;
+NET "pin_key_in[10]" LOC = N1;
+NET "pin_key_in[9]" LOC = N2;
+NET "pin_key_in[8]" LOC = R1;
+NET "pin_key_in[7]" LOC = R4;
+NET "pin_key_in[6]" LOC = U1;
+NET "pin_key_in[5]" LOC = V2;
+NET "pin_key_in[4]" LOC = V3;
+NET "pin_key_in[3]" LOC = V4;
+NET "pin_key_in[2]" LOC = U8;
+NET "pin_key_in[1]" LOC = R7;
+NET "pin_key_in[0]" LOC = T7;
+NET "pin_CLK_11MHz" LOC = B8;
+NET "pin_CLK_50MHz" LOC = B9;
+NET "pin_CLK_hand" LOC = U9;
