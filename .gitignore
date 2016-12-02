@@ -87,6 +87,7 @@ doc/pr3_report/hardwork*.*
 
 CPU-KOTORI/isim/
 CPU-KOTORI/netgen/
+CPU-KOTORI/ipcore_dir/
 *.wdb
 *.xls
 *.xlsx
@@ -105,3 +106,5 @@ temp/
 *.key
 *.sv
 *.cgp
+
+

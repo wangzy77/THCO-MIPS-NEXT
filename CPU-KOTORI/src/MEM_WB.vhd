@@ -77,7 +77,7 @@ begin
 					when ins_MFPC =>
                         Wreg_data_out <= PC_in; 
                     when ins_JALR =>
-					    Wreg_data_out <= PC_in + 2;
+					    Wreg_data_out <= PC_in + 1;
                     when others =>
 						Wreg_data_out <= ZERO_16 ;
                 end case;
