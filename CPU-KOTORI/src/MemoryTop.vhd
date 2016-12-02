@@ -7,61 +7,72 @@ library WORK;
 use WORK.util.ALL;
 
 entity MemoryTop is
-	Port(
-		--clock 
-		clk_50MHz : in std_logic;
-        clk_11Mhz : in std_logic;
-        clk_hand : in std_logic;
-		rst : in std_logic;
-        cpu_clk : out std_logic := '1';
-        key_in : in Bus16;
-		
-		--addr1 for instruction
-		instrAddress : in std_logic_vector(15 downto 0);
-		instrOutput : out std_logic_vector(15 downto 0);
-		
-		--addr2 for data
-		dataAddress : in std_logic_vector(15 downto 0);
-		dataOutput : out std_logic_vector(15 downto 0);
-		dataInput : in std_logic_vector(15 downto 0);
-		
-		--control signal
-		MemRead : in std_logic;
-		MemWrite : in std_logic;
-		
-		--ram1 disable not to disturb databus
-		ram1_EN : out std_logic := '1';
-		ram1_OE : out std_logic := '1';
-		ram1_WE : out std_logic := '1';
-		ram1_Databus : inout std_logic_vector(7 downto 0);
-		
-		--ram2 enable signal
-		ram2_EN : out std_logic;
-		ram2_OE : out std_logic;
-		ram2_WE : out std_logic;
-		ram2_Databus : inout std_logic_vector(15 downto 0);
-		
-		--serial for ram1
-		serialDataReady : in std_logic;
-		serialRDN : out std_logic;
-		serialTBRE : in std_logic;
-		serialTSRE : in std_logic;
-		serialWRN : out std_logic;
-		
-		--memAddress for ram2
-		memAddress : out std_logic_vector(17 downto 0);
-        
-        -- port for flash
-		flash_byte : out std_logic;
-		flash_vpen : out std_logic;
-		flash_ce : out std_logic;
-		flash_oe : out std_logic;
-		flash_we : out std_logic;
-		flash_rp : out std_logic;
-		flash_addr : out std_logic_vector(22 downto 1);
-		flash_data : inout std_logic_vector(15 downto 0);
-        
-        debug_led_state :out std_logic_vector(3 downto 0));
+Port(
+    --clock 
+    clk_50MHz : in std_logic;
+    clk_11Mhz : in std_logic;
+    clk_hand : in std_logic;
+    rst : in std_logic;
+    cpu_clk : out std_logic := '0';
+    key_in : in Bus16;
+    
+    --addr1 for instruction
+    instrAddress : in std_logic_vector(15 downto 0);
+    instrOutput : out std_logic_vector(15 downto 0);
+    
+    --addr2 for data
+    dataAddress : in std_logic_vector(15 downto 0);
+    dataOutput : out std_logic_vector(15 downto 0);
+    dataInput : in std_logic_vector(15 downto 0);
+    
+    --control signal
+    MemRead : in std_logic;
+    MemWrite : in std_logic;
+    
+    --ram1 disable not to disturb databus
+    ram1_EN : out std_logic := '1';
+    ram1_OE : out std_logic := '1';
+    ram1_WE : out std_logic := '1';
+    ram1_Databus : inout std_logic_vector(7 downto 0);
+    
+    --ram2 enable signal
+    ram2_EN : out std_logic;
+    ram2_OE : out std_logic;
+    ram2_WE : out std_logic;
+    ram2_Databus : inout std_logic_vector(15 downto 0);
+    
+    --serial for ram1
+    serialDataReady : in std_logic;
+    serialRDN : out std_logic;
+    serialTBRE : in std_logic;
+    serialTSRE : in std_logic;
+    serialWRN : out std_logic;
+    
+    --memAddress for ram2
+    memAddress : out std_logic_vector(17 downto 0);
+    
+    -- port for flash
+    flash_byte : out std_logic;
+    flash_vpen : out std_logic;
+    flash_ce : out std_logic;
+    flash_oe : out std_logic;
+    flash_we : out std_logic;
+    flash_rp : out std_logic;
+    flash_addr : out std_logic_vector(22 downto 1);
+    flash_data : inout std_logic_vector(15 downto 0);
+    
+    debug_led_state :out std_logic_vector(3 downto 0);
+    
+    --connection with keyboard
+    keyboard_data : in std_logic_vector(7 downto 0);
+    keyboard_dataready : in std_logic;
+    keyboard_wrn : out std_logic;
+    
+    --connection with vga
+    VGA_addr : out std_logic_vector(10 downto 0);
+    VGA_write : out std_LOGIC_vector(0 downto 0);
+    VGA_char : out std_logic_vector(7 downto 0)
+);
 end MemoryTop;
 
 architecture Behavioral of MemoryTop is
@@ -114,7 +125,7 @@ end component;
 	signal instrBuffer : std_logic_vector(15 downto 0) := INSTRUCTION_NOP;
 	signal dataBuffer : std_logic_vector(15 downto 0) := "0000000000000000";
 	signal tempAddress : std_logic_vector(15 downto 0);
-	signal BF01 : std_logic_vector(15 downto 0);
+	signal BF01, BF03 : std_logic_vector(15 downto 0);
 	signal flag_mem : std_logic;
 	signal flag_serial : std_logic;
 	signal memHolder : std_logic_vector(15 downto 0);
@@ -153,8 +164,15 @@ begin
             "1011" when idel2,
             
             "1111" when others;
-    
-	
+   
+--------------------------------------------------
+-- cpu_clk
+    with now_state select
+        cpu_clk <=
+            '0' when idel1 | instrRead,
+            '1' when others;
+   
+--------------------------------------------------
 	--memory part
 	
 	instrOutput <= instrBuffer;
@@ -185,7 +203,7 @@ begin
 			instrAddress when boot_ready | instrRead,
 			dataAddress when dataRW | idel1 | idel2,
             flash_pc when boot_flash | boot_ram1 | boot_ram2,
-            ZERO_16 when others;
+            x"0000" when others;
 	
 	with now_state select
 		flag_mem <= 
@@ -197,17 +215,18 @@ begin
         mem_clk <=
             clk_hand when "1111",
             clk_50MHz when "0000",
-            clk_11Mhz when "0001",
+            clk_11Mhz when "0010",
             debug_clk_from_div when others;
 	
 	-- memHolder <= dataInput;
 	
 	ram2_Databus <= 
-        flash_hold_data when (now_state = boot_flash or now_state = boot_ram1 or now_state = boot_ram2)else 
+        flash_hold_data when (now_state = boot_flash or now_state = boot_ram1 or now_state = boot_ram2)
+        else 
         dataInput when (flag_mem = WRITE_EN)
         else "ZZZZZZZZZZZZZZZZ";
 
-	
+--------------------------------------------------
 	--serial part
 	
 	BF01(0) <= serialTBRE and serialTSRE;
@@ -237,6 +256,25 @@ begin
 		flash_ctl_read <= 
 			READ_EN when boot_flash,
 			READ_DIS when others;
+            
+--------------------------------------------------
+-- keyboard part
+    keyboard_wrn <=
+        (not MemRead) when ((dataAddress = x"BF02") and (now_state = idel2))
+        else '0';
+    BF03(0) <= keyboard_dataready;
+    BF03(15 downto 1) <= "000000000000000";
+    
+--------------------------------------------------
+-- VGA
+    VGA_addr <= dataAddress(10 downto 0);
+    VGA_char <= dataInput(7 downto 0);
+    VGA_write <=
+        "1" when ((MemWrite = '0') and (now_state = dataRW) and (dataAddress(15 downto 12) = x"F"))
+        else "0";
+    
+--------------------------------------------------
+-- main control
 	
 	process(mem_clk, rst)
 	
@@ -250,7 +288,7 @@ begin
                 -- boot from flash
 				when boot =>
                     flash_addr_count <= x"00";
-					now_state <= boot_flash;
+					now_state <= boot_ready;    --boot_flash;
                 when boot_flash =>
                     case flash_addr_count is
                         when x"00" =>
@@ -274,17 +312,17 @@ begin
                     end if;
                 when boot_ready => 
                     now_state <= instrRead;
-                    cpu_clk <= '0';
+                    -- cpu_clk <= '0';
                 
                     
-                    
+
                 -- cpu circle
 				when instrRead =>
 					now_state <= idel1;
 					instrBuffer <= ram2_Databus;
 				when idel1 =>
 					now_state <= dataRW;
-                    cpu_clk <= '1';
+                    -- cpu_clk <= '1';
 				when dataRW =>
 					now_state <= idel2;
 					case dataAddress is
@@ -292,12 +330,16 @@ begin
 							dataBuffer <= "00000000" & ram1_Databus;
 						when x"BF01" =>
 							dataBuffer <= BF01;
+                        when x"BF02" =>
+                            dataBuffer <= ZERO_8 & keyboard_data;
+                        when x"BF03" =>
+                            dataBuffer <= BF03;
 						when others =>
 							dataBuffer <= ram2_Databus;
 					end case;
 				when others =>
 					now_state <= instrRead;
-                    cpu_clk <= '0';
+                    -- cpu_clk <= '0';
 			end case;
 		end if;
 	

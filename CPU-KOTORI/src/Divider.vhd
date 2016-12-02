@@ -28,10 +28,10 @@ begin
 
 
     case key_in(3 downto 0) is
-        when "0010" => div_rate := 50;
-        when "0011" => div_rate := 1000;
+        when "0001" => div_rate := 2;
+        when "0011" => div_rate := 50;
         when "0100" => div_rate := 100000;
-        when others => div_rate := 1;
+        when others => div_rate := 100000;
     end case;
     
 	if (clkin'event and clkin = '1') then

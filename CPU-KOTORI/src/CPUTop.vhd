@@ -69,7 +69,18 @@ Port(
     pin_flash_we : out std_logic;
     pin_flash_rp : out std_logic;
     pin_flash_addr : out std_logic_vector(22 downto 1);
-    pin_flash_data : inout std_logic_vector(15 downto 0));
+    pin_flash_data : inout std_logic_vector(15 downto 0);
+    
+    -- port for VGA
+    pin_VGA_R: out std_logic_vector(2 downto 0) := "000";
+    pin_VGA_G: out std_logic_vector(2 downto 0) := "000";
+    pin_VGA_B: out std_logic_vector(2 downto 0) := "000";
+    pin_VGA_Hs: out std_logic := '0';
+    pin_VGA_Vs: out std_logic := '0';
+    
+    -- port for keyboard
+    pin_key_datain: in std_logic;
+    pin_key_clkin: in std_logic);
            
 end CPUTop;
 
@@ -362,7 +373,17 @@ Port(
     flash_addr : out std_logic_vector(22 downto 1);
     flash_data : inout std_logic_vector(15 downto 0);
     
-    debug_led_state :out std_logic_vector(3 downto 0));
+    debug_led_state :out std_logic_vector(3 downto 0);
+    
+    --connection with keyboard
+    keyboard_data : in std_logic_vector(7 downto 0);
+    keyboard_dataready : in std_logic;
+    keyboard_wrn : out std_logic;
+    
+    --connection with vga
+    VGA_addr : out std_logic_vector(10 downto 0);
+    VGA_write : out std_LOGIC_vector(0 downto 0);
+    VGA_char : out std_logic_vector(7 downto 0));
 end component;
 
 component MEM_WB is
@@ -385,9 +406,39 @@ Port(
 end component;
 
 --WB
+----------------------------------------------------------------------------------
+-- keyboard VGA
+component KeyTop is
+port(
+    datain,clkin,clk50,rst_in: in std_logic;
+    dataready_out: out std_logic;
+    datareceived: in std_logic;
+    out_char: out std_logic_vector(7 downto 0)
+);
+end component;
+
+component VGA_play is
+Port(
+    -- common port
+    CLK_0: in std_logic; -- must 50M
+    -- clkout: out std_logic; -- used to sync
+    reset: in std_logic;
+    
+    -- vga port
+    R: out std_logic_vector(2 downto 0) := "000";
+    G: out std_logic_vector(2 downto 0) := "000";
+    B: out std_logic_vector(2 downto 0) := "000";
+    Hs: out std_logic := '0';
+    Vs: out std_logic := '0';
+    
+    -- fifo memory
+    wctrl: in std_logic_vector(0 downto 0); -- 1 is write
+    waddr: in std_logic_vector(10 downto 0);
+    wdata : in std_logic_vector(7 downto 0)
+);
+end component;
 
 ----------------------------------------------------------------------------------
-
 --debug_tube
 component tube_encoder is
 port(
@@ -453,6 +504,15 @@ end component;
 ----------------------------------------------------------------------------------
 --clk
     signal cpu_clk : std_logic; --主频，12.5MHz
+----------------------------------------------------------------------------------
+-- VGA keyboard
+    signal keyb_data: std_logic_vector(7 downto 0);
+    signal keyb_dataready: std_logic;
+    signal keyb_wrn: std_logic;
+
+    signal vgawctrl: std_logic_vector(0 downto 0); -- 1 is write
+    signal vgawaddr: std_logic_vector(10 downto 0);
+    signal vgawdata: std_logic_vector(7 downto 0);
 ----------------------------------------------------------------------------------
 --const signal
     constant const_write_en : std_logic := WRITE_EN;
@@ -695,7 +755,17 @@ Unit_MemoryTop : MemoryTop port map(
     flash_addr => pin_flash_addr,
     flash_data => pin_flash_data,
     
-    debug_led_state => pin_debug_led(3 downto 0));
+    -- debug_led_state => pin_debug_led(3 downto 0),
+    
+    --connection with keyboard
+    keyboard_data => keyb_data,
+    keyboard_dataready => keyb_dataready,
+    keyboard_wrn => keyb_wrn,
+    
+    --connection with vga
+    VGA_addr => vgawaddr,
+    VGA_write => vgawctrl,
+    VGA_char => vgawdata);
     
 Unit_MEM_WB : MEM_WB port map(
     instruction_type_in => EXE_MEM_instruction_type_o,
@@ -714,12 +784,34 @@ Unit_MEM_WB : MEM_WB port map(
     rst => rst,
     WriteIn => const_write_en);
 ----------------------------------------------------------------------------------
+Unit_KeyTop : KeyTop port map(
+    datain => pin_key_datain,
+    clkin => pin_key_clkin,
+    clk50 => pin_CLK_50MHz,
+    rst_in => rst,
+    dataready_out => keyb_dataready,
+    datareceived => keyb_wrn,
+    out_char => keyb_data);
+    
+Unit_VGA : VGA_play port map(
+    wctrl => vgawctrl,
+    waddr => vgawaddr,
+    wdata => vgawdata,
+    
+    CLK_0 => pin_CLK_50MHz,
+    reset => rst,
+    
+    R => pin_VGA_R,
+    G => pin_VGA_G,
+    B => pin_VGA_B,
+    Hs => pin_VGA_Hs,
+    Vs => pin_VGA_Vs);
+
+----------------------------------------------------------------------------------
 pin_RAM1_Addr <= ZERO_18;
 ----------------------------------------------------------------------------------
 --debug
-    pin_debug_led(15 downto 4) <= MemeryTop_instrOutput(15 downto 4);
-    --pin_debug_led(1) <= pin_com_tbre;
-    --pin_debug_led(0) <= pin_com_tsre;
+    pin_debug_led(15 downto 0) <= MemeryTop_instrOutput(15 downto 0);
 	 
 Unit_tube_encoder_1 : tube_encoder port map(
     key => IF_PC_output_pc(7 downto 4),

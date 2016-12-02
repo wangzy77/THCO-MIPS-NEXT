@@ -59,13 +59,14 @@ constant V_TRUE : std_logic := '1';
 constant V_FALSE : std_logic := '0';
 
 constant ZERO_4 : std_logic_vector(3 downto 0) := "0000";
+constant ZERO_8 : std_logic_vector(7 downto 0) := "00000000";
 constant ZERO_16 : std_logic_vector(15 downto 0) := "0000000000000000";
 constant ZERO_18 : std_logic_vector(17 downto 0) := "000000000000000000";
 constant ZZZZ_16 : std_logic_vector(15 downto 0) := "ZZZZZZZZZZZZZZZZ";
 
 constant INSTRUCTION_NOP : std_logic_vector(15 downto 0) := "0000100000000000";
 
-constant MAX_INS_FROM_FLASH : std_logic_vector(15 downto 0) := x"0200";
+constant MAX_INS_FROM_FLASH : std_logic_vector(15 downto 0) := x"40FF";
 
 
 ----------------------------------------------------------------------------------

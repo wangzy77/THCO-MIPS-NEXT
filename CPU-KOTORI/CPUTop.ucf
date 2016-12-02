@@ -136,7 +136,6 @@ NET "pin_CLK_11MHz" LOC = B8;
 NET "pin_CLK_50MHz" LOC = B9;
 NET "pin_CLK_hand" LOC = U9;
 
-# PlanAhead Generated physical constraints 
 
 NET "pin_flash_addr[22]" LOC = K4;
 NET "pin_flash_addr[21]" LOC = K5;
@@ -182,3 +181,21 @@ NET "pin_flash_oe" LOC = E1;
 NET "pin_flash_rp" LOC = D1;
 NET "pin_flash_vpen" LOC = C2;
 NET "pin_flash_we" LOC = D4;
+
+
+NET "pin_VGA_B[2]" LOC = B6;
+NET "pin_VGA_B[1]" LOC = A6;
+NET "pin_VGA_B[0]" LOC = D5;
+NET "pin_VGA_G[2]" LOC = C5;
+NET "pin_VGA_G[1]" LOC = C4;
+NET "pin_VGA_G[0]" LOC = B4;
+NET "pin_VGA_R[2]" LOC = A4;
+NET "pin_VGA_R[1]" LOC = C3;
+NET "pin_VGA_R[0]" LOC = A7;
+NET "pin_VGA_Hs" LOC = D6;
+NET "pin_VGA_Vs" LOC = E6;
+
+# PlanAhead Generated physical constraints 
+
+NET "pin_key_clkin" LOC = U6;
+NET "pin_key_datain" LOC = V6;
