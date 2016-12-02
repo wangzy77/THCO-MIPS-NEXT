@@ -64,6 +64,7 @@ Port(
     debug_led_state :out std_logic_vector(3 downto 0);
     
     --connection with keyboard
+    -- char
     keyboard_data : in std_logic_vector(7 downto 0);
     keyboard_dataready : in std_logic;
     keyboard_wrn : out std_logic;
@@ -111,6 +112,12 @@ port(
     ctl_erase : in std_logic);
 end component;
 
+component mychar_to_ascii is
+port(
+    mychar_i : in std_logic_vector(7 downto 0);
+    ascii_o : out std_logic_vector(7 downto 0));
+end component;
+
 ----------------------------------------------------------------------------------
 	
 	--state machine
@@ -144,6 +151,10 @@ end component;
 	signal flash_addr_count: std_logic_vector(7 downto 0);
 	signal flash_pc : std_logic_vector(15 downto 0) := x"FFFF";
 	signal flash_hold_data : STD_LOGIC_VECTOR(15 downto 0);
+    
+--------------------------------------------------
+-- signal for keyboard
+    signal char2ascii : std_LOGIC_vector(7 downto 0);
 
 
 ----------------------------------------------------------------------------------	
@@ -373,6 +384,10 @@ Unit_flash_io : flash_io port map(
     ctl_read => flash_ctl_read,
     ctl_write => flash_ctl_write,
     ctl_erase => flash_ctl_erase);
+    
+Unit_mychar_to_ascii : mychar_to_ascii port map(
+    mychar_i => keyboard_data,
+    ascii_o => char2ascii);
 	
 end Behavioral;
 	
