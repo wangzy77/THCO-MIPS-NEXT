@@ -91,3 +91,17 @@ CPU-KOTORI/netgen/
 *.xls
 *.xlsx
 temp/
+
+# ./ipcore/
+*.asy
+*_readme.txt
+*_vinfo.html
+*.pdf
+*_flist.txt
+*.bat
+*.sh
+*.scr
+*.do
+*.key
+*.sv
+*.cgp

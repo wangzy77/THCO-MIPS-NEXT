@@ -197,7 +197,7 @@ begin
         mem_clk <=
             clk_hand when "1111",
             clk_50MHz when "0000",
-            clk_11Mhz when "0001",
+            clk_11Mhz when "0010",
             debug_clk_from_div when others;
 	
 	-- memHolder <= dataInput;
