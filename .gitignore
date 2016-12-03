@@ -91,8 +91,7 @@ CPU-KOTORI/netgen/
 *.xls
 *.xlsx
 temp/
-
-# ./ipcore/
+CPU-KOTORI/ipcore_dir/tmp/
 *.asy
 *_readme.txt
 *_vinfo.html
